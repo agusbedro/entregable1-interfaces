@@ -15,11 +15,13 @@ class Board{
     paint(){
         this.ctx.fillStyle = this.fill;
         this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
+        console.log(this.resaltado);
 
         if(this.resaltado === true){
             this.ctx.strokeStyle = this.resaltadoEstilo;
             this.ctx.lineWidth = 5;
             this.ctx.strokeRect(this.posX, this.posY, this.width, this.height);
+            
         }
     }
 

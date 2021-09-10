@@ -31,15 +31,17 @@ function findClickedFigure(x, y){
         const elemnt = figures[i];
         if(elemnt.isPointedInside(x, y))
             return elemnt;
-    }
+    }   
 }
 
 function onMouseDown(e){
     isMouseDown = true;
+    console.log("afuera if");
 
     if(lastClickedFigure != null){
         lasClickedFigure.setResaltado(false);
         lasClickedFigure = null;
+        console.log("adentro if");
     }
 
     let clickFig = findClickedFigure(e.layerX, e.layerY);
@@ -68,13 +70,9 @@ function onMouseMove(e){
 }
 draw();
 
-canvas.addEventListener('mousedown',function(){
-    onMouseDown, false;
-});
+canvas.addEventListener('mousedown',onMouseDown, false);
 
-canvas.addEventListener('mousemove', function(){
-    onMouseMove, true;
-});
-canvas.addEventListener('mouseup', function(){
-    onMouseUp, false;
-});
+
+canvas.addEventListener('mousemove', onMouseMove, false);
+
+canvas.addEventListener('mouseup', onMouseUp, false);
