@@ -6,23 +6,13 @@ class Board{
         this.posY = posY;
         this.fill = fill;
         this.ctx = ctx;
-        this.resaltado = false;
-        this.resaltadoEstilo = 'black';
-        this.width = 30;
-        this.height = 30;
+        this.width = 5;
+        this.height = 5;
     }
 
     paint(){
         this.ctx.fillStyle = this.fill;
         this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
-        console.log(this.resaltado);
-
-        if(this.resaltado === true){
-            this.ctx.strokeStyle = this.resaltadoEstilo;
-            this.ctx.lineWidth = 5;
-            this.ctx.strokeRect(this.posX, this.posY, this.width, this.height);
-            
-        }
     }
 
     getPosX(){
@@ -41,17 +31,11 @@ class Board{
     getPosition(){
         return{
             x: this.getPosX(),
-            y:this.getPosY()
+            y: this.getPosY()
         };
     }
 
     isPointedInside(x, y){
         return !(x<this.posX || x>this.posX+this.width || y <this.posY || y> this.posY+this.height);
     }
-
-    setResaltado(resaltado){
-        this.resaltado = resaltado;
-    }
-
-
 }

@@ -2,77 +2,81 @@ let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 let canvasWidht = canvas.width;
 let canvasHeight = canvas.height;
-
-let figures = [];
+let pencil = false;
+let lines = [];
 let lastClickedFigure = null;
 let isMouseDown = false;
+let eraser = false;
 
-function draw(){
-    addRect();
-    paint();
-}
-
-function addRect(){
-    let posX = Math.round(Math.random() * canvasWidht);
-    let posY = Math.round(Math.random() * canvasHeight);
-    let color = 'red';   
-    figures.push(new Board(posX, posY, color, ctx));
+function setPencil(){
+    pencil = true;
 }
 
 function paint(){
-    clearCanvas();
-    for(let i = 0; i<figures.length; i++){
-        figures[i].paint();
+    for(let i = 0; i<lines.length; i++){
+        lines[i].paint();
     }
 }
 
-function findClickedFigure(x, y){
-    for(let i = 0; i <figures.length; i++){
-        const elemnt = figures[i];
-        if(elemnt.isPointedInside(x, y))
-            return elemnt;
-    }   
+function getIndexOfLine(x, y){
+    for(let i =0; i<lines.length; i++){
+        console.log( lines[i].getPosX() + "    " + lines[i].getPosY());
+        if(lines[i].getPosX() == x && lines[i].getPosY() == y){
+            console.log("entre")
+            return i;
+        }
+    }
 }
 
 function onMouseDown(e){
     isMouseDown = true;
-    console.log("afuera if");
 
-    if(lastClickedFigure != null){
-        lasClickedFigure.setResaltado(false);
-        lasClickedFigure = null;
-        console.log("adentro if");
+    let color = 'red'; 
+    let clickFig =  new Board(e.layerX, e.layerY, color, ctx);
+    
+    //para dibujar
+    if(clickFig != null && pencil && !eraser){
+        eraser = false;
+        lines.push(clickFig);
+        lastClickedFigure = clickFig;
+        console.log("holu estoy dibujando ");
+        paint();
     }
 
-    let clickFig = findClickedFigure(e.layerX, e.layerY);
-
-    if(clickFig != null){
-        clickFig.setResaltado(true);
-        lasClickedFigure = clickFig;
+    //para borrar
+    if(eraser){
+        pencil = false;
+        console.log(pencil);
+        if(lastClickedFigure != null && lastClickedFigure.isPointedInside(e.layerX, e.layerY)){
+            console.log(getIndexOfLine(e.layerX, e.layerY));
+            lines.splice(getIndexOfLine(e.layerX, e.layerY));
+            //paint();
+        }
+    
     }
-    paint();
 }
 
 function onMouseUp(){
     isMouseDown = false;
 }
 
-function clearCanvas(){
-    if(lastClickedFigure!=null)
-        lastClickedFigure.setResaltado(false);
-}
-
 function onMouseMove(e){
-    if(isMouseDown && lasClickedFigure != null){
-        lasClickedFigure.setPosition(e.layerX, e.layerY);
+    if(isMouseDown && lastClickedFigure != null && pencil){
+        lastClickedFigure.setPosition(e.layerX, e.layerY);
         paint();
     }
 }
-draw();
+
+function erase(){
+    eraser = true;
+}
 
 canvas.addEventListener('mousedown',onMouseDown, false);
-
 
 canvas.addEventListener('mousemove', onMouseMove, false);
 
 canvas.addEventListener('mouseup', onMouseUp, false);
+
+document.getElementById("pencil").addEventListener('click', setPencil, false);
+
+document.getElementById("eraser").addEventListener('click', erase, false);
