@@ -7,68 +7,54 @@ let lines = [];
 let lastClickedFigure = null;
 let isMouseDown = false;
 let eraser = false;
+let activarPintado = false;
 
 function setPencil(){
     pencil = true;
     eraser = false;
 }
 
-function paint(){
-    for(let i = 0; i<lines.length; i++){
-        lines[i].paint();
-    }
-}
-
-function getIndexOfLine(x, y){
-    for(let i =0; i<lines.length; i++){
-        if(lines[i].getPosX() == x && lines[i].getPosY() == y)
-            return i;
-    }
-}
-
 
 function onMouseDown(e){
     if(pencil || eraser){
-        isMouseDown = true;
-        let color;
-    
-        if(pencil)
-            color = 'red';
-        else if(eraser)
-            color = 'white';
-
-        createLine(e, color);    
+        activarPintado = true;
+        onMouseMove(e);
     }
 }
 
-function createLine(e, color){
-    let clickFig =  new Board(e.layerX, e.layerY, color, ctx);
-   
-    if(eraser)
-        clickFig.setRadius(6);
+function onMouseMove(e){
+    if(activarPintado){
+        isMouseDown = true;
+        let color;
     
-    lines.push(clickFig);
-    lastClickedFigure = clickFig;
-    paint();
+        if(pencil){
+            color = 'red';
+            ctx.lineWidth = 25;
+        }
+        else if(eraser){
+            color = 'white';
+            ctx.lineWidth = 25;
+        }
+
+        ctx.strokeStyle = color;
+        ctx.fill();    
+        ctx.lineCap = "round";
+        ctx.lineTo(e.layerX, e.layerY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.layerX, e.layerY);
+    }
 }
 
 function onMouseUp(){
     isMouseDown = false;
-}
-
-function onMouseMove(e){
-    if(isMouseDown && lastClickedFigure != null && (pencil || eraser)){
-        lastClickedFigure.setPosition(e.layerX, e.layerY);
-        paint();
-    }
+    activarPintado = false;
+    ctx.beginPath();
 }
 
 function erase(){
     eraser = true;
     pencil = false;
-   // color = 'white';
-   clickFig.setColor('white');
-
 }
 
 canvas.addEventListener('mousedown',onMouseDown, false);
