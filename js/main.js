@@ -57,10 +57,6 @@ function erase(){
     pencil = false;
 }
 
-function setColor(){
-
-}
-
 canvas.addEventListener('mousedown',onMouseDown, false);
 
 canvas.addEventListener('mousemove', onMouseMove, false);
@@ -70,4 +66,5 @@ canvas.addEventListener('mouseup', onMouseUp, false);
 document.getElementById("pencil").addEventListener('click', setPencil, false);
 
 document.getElementById("eraser").addEventListener('click', erase, false);
+
 
