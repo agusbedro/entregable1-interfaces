@@ -28,7 +28,7 @@ function onMouseMove(e){
         let color;
     
         if(pencil){
-            color = 'red';
+            color = document.getElementById("paleta").value;
             ctx.lineWidth = 25;
         }
         else if(eraser){
@@ -57,6 +57,10 @@ function erase(){
     pencil = false;
 }
 
+function setColor(){
+
+}
+
 canvas.addEventListener('mousedown',onMouseDown, false);
 
 canvas.addEventListener('mousemove', onMouseMove, false);
@@ -66,3 +70,4 @@ canvas.addEventListener('mouseup', onMouseUp, false);
 document.getElementById("pencil").addEventListener('click', setPencil, false);
 
 document.getElementById("eraser").addEventListener('click', erase, false);
+
