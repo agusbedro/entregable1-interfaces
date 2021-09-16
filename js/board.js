@@ -6,13 +6,15 @@ class Board{
         this.posY = posY;
         this.fill = fill;
         this.ctx = ctx;
-        this.width = 5;
-        this.height = 5;
+        this.radius = 3;
     }
 
     paint(){
-        this.ctx.fillStyle = this.fill;
-        this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
+        
+        ctx.beginPath();
+        ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = this.fill;
+        this.ctx.fill();        
     }
 
     getPosX(){
@@ -37,5 +39,17 @@ class Board{
 
     isPointedInside(x, y){
         return !(x<this.posX || x>this.posX+this.width || y <this.posY || y> this.posY+this.height);
+    }
+
+    setColor(color){
+        this.fill = color;
+    }
+
+    getColor(){
+        return this.fill; 
+    }
+
+    setRadius(radius){
+        this.radius = radius;
     }
 }

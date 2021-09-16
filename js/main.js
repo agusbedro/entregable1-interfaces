@@ -10,6 +10,7 @@ let eraser = false;
 
 function setPencil(){
     pencil = true;
+    eraser = false;
 }
 
 function paint(){
@@ -20,40 +21,35 @@ function paint(){
 
 function getIndexOfLine(x, y){
     for(let i =0; i<lines.length; i++){
-        console.log( lines[i].getPosX() + "    " + lines[i].getPosY());
-        if(lines[i].getPosX() == x && lines[i].getPosY() == y){
-            console.log("entre")
+        if(lines[i].getPosX() == x && lines[i].getPosY() == y)
             return i;
-        }
     }
 }
 
+
 function onMouseDown(e){
-    isMouseDown = true;
+    if(pencil || eraser){
+        isMouseDown = true;
+        let color;
+    
+        if(pencil)
+            color = 'red';
+        else if(eraser)
+            color = 'white';
 
-    let color = 'red'; 
+        createLine(e, color);    
+    }
+}
+
+function createLine(e, color){
     let clickFig =  new Board(e.layerX, e.layerY, color, ctx);
+   
+    if(eraser)
+        clickFig.setRadius(6);
     
-    //para dibujar
-    if(clickFig != null && pencil && !eraser){
-        eraser = false;
-        lines.push(clickFig);
-        lastClickedFigure = clickFig;
-        console.log("holu estoy dibujando ");
-        paint();
-    }
-
-    //para borrar
-    if(eraser){
-        pencil = false;
-        console.log(pencil);
-        if(lastClickedFigure != null && lastClickedFigure.isPointedInside(e.layerX, e.layerY)){
-            console.log(getIndexOfLine(e.layerX, e.layerY));
-            lines.splice(getIndexOfLine(e.layerX, e.layerY));
-            //paint();
-        }
-    
-    }
+    lines.push(clickFig);
+    lastClickedFigure = clickFig;
+    paint();
 }
 
 function onMouseUp(){
@@ -61,7 +57,7 @@ function onMouseUp(){
 }
 
 function onMouseMove(e){
-    if(isMouseDown && lastClickedFigure != null && pencil){
+    if(isMouseDown && lastClickedFigure != null && (pencil || eraser)){
         lastClickedFigure.setPosition(e.layerX, e.layerY);
         paint();
     }
@@ -69,6 +65,10 @@ function onMouseMove(e){
 
 function erase(){
     eraser = true;
+    pencil = false;
+   // color = 'white';
+   clickFig.setColor('white');
+
 }
 
 canvas.addEventListener('mousedown',onMouseDown, false);
