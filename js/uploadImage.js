@@ -1,3 +1,5 @@
+let image;
+
 function addImage(){
     var img = new Image();
     img.src = x;
@@ -12,9 +14,9 @@ function uploadImage(e){
         let reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = function (e) {
-            let image = new Image();
+           
+            image =new Image();
             image.src = e.target.result;
-            
             image.onload = function (ev) {
                 
                 let size;
@@ -37,12 +39,49 @@ function uploadImage(e){
                     width = width * sizeW;
                     height = height * sizeH;
                 }
-
+                
                 ctx.drawImage(image, 0, 0, width, height);
             }
         } 
     }
 }
 
-let image = document.getElementById("image");
-image.addEventListener('change', uploadImage, false);
+function filterSepia(){
+    var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    var pixels = imgData.data;
+    console.log(imgData.data);
+    for(let i = 0; i< pixels.length;i+=4){
+        var luminosidad = .3 * pixels[i] + .6 * pixels[i + 1] + .1 * pixels[i + 2];
+		  pixels[i] = Math.min(luminosidad + 40, 255);
+		  pixels[i + 1] = Math.min(luminosidad + 15, 255);
+		  pixels[i + 2] = luminosidad;
+    }
+    ctx.putImageData(imgData, 0, 0);
+}
+
+function filterBinarizacion(){
+    var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    var pixels = imgData.data;
+    for(let i = 0; i< pixels.length;i+=4){
+        if(pixels[i] > 127){
+            pixels[i] = 255;
+            pixels[i +1] = 255;
+            pixels[i+2] = 255;
+            //pixels[i+3] = 0.1;
+        }
+        else {
+            pixels[i]=0;
+            pixels[i +1] = 0;
+            pixels[i+2] = 0;
+            //pixels[i+3] = 0;
+        }
+    }
+    ctx.putImageData(imgData, 0, 0);
+}
+
+let img = document.getElementById("image");
+img.addEventListener('change', uploadImage, false);
+
+document.getElementById("filterSepia").addEventListener("click", filterSepia, false);
+
+document.getElementById("filterBina").addEventListener("click", filterBinarizacion, false);
