@@ -119,6 +119,43 @@ function clearCanvas(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);   
 }
 
+function downloadImage(){
+    let canvas = document.getElementById("myCanvas");
+    let image = canvas.toDataURL();
+
+    var link = document.createElement('a');
+    link.download = "canvas.png";
+    link.href = image;
+    link.click();
+    link.remove;
+
+}
+function filterBlur(){
+        let start = +new Date();
+		blur = 3;
+        
+		let sum = 0;
+		let delta = 5;
+		let alpha_left = 1 / (2 * Math.PI * delta * delta);
+		let step = blur < 3 ? 1 : 2;
+		for (let y = -blur; y <= blur; y += step) {
+			for (let x = -blur; x <= blur; x += step) {
+				let weight = alpha_left * Math.exp(-(x * x + y * y) / (2 * delta * delta));
+				sum += weight;
+			}
+		}
+		let count = 0;
+		for (let y = -blur; y <= blur; y += step) {
+			for (let x = -blur; x <= blur; x += step) {
+				count++;
+				ctx.globalAlpha = alpha_left * Math.exp(-(x * x + y * y) / (2 * delta * delta)) / sum * blur;
+				ctx.drawImage(canvas,x,y);
+			}
+		}
+		ctx.globalAlpha = 1;
+		console.log("time: "+(+new Date() - start))
+}
+
 
 let img = document.getElementById("image");
 img.addEventListener('change', uploadImage, false);
@@ -132,3 +169,7 @@ document.getElementById("filterGrey").addEventListener("click", filterGrey, fals
 document.getElementById("filterNegative").addEventListener("click", filterNegative, false);
 
 document.getElementById("clearCanvas").addEventListener("click", clearCanvas, false);
+
+document.getElementById("downloadImage").addEventListener("click", downloadImage, false);
+
+document.getElementById("filterBlur").addEventListener("click", filterBlur, false);
