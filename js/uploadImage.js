@@ -79,9 +79,56 @@ function filterBinarizacion(){
     ctx.putImageData(imgData, 0, 0);
 }
 
+function filterGrey() {
+    var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    var pixels = imgData.data;
+    for ( var i = 0; i < pixels.length; i+=4 ) {
+        var r = pixels[i];
+        var g = pixels[i + 1];
+        var b = pixels[i + 2];
+ 
+        var grey = ( r + g + b ) / 3;
+ 
+        pixels[i] = grey;
+        pixels[i + 1] = grey;
+        pixels[i + 2] = grey;
+    }
+ 
+    ctx.putImageData(imgData, 0, 0 );
+}
+
+function filterNegative () {
+
+    var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    var pixels = imgData.data;
+
+    for ( var i = 0; i < pixels.length; i++ ) {
+        var r = pixels[ i * 4 ];
+        var g = pixels[ i * 4 + 1 ];
+        var b = pixels[ i * 4 + 2 ];
+ 
+        pixels[ i * 4 ] = 255 - r;
+        pixels[ i * 4 + 1 ] = 255 - g;
+        pixels[ i * 4 + 2 ] = 255 - b;
+    }
+ 
+    ctx.putImageData( imgData, 0, 0 );
+}
+
+function clearCanvas(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);   
+}
+
+
 let img = document.getElementById("image");
 img.addEventListener('change', uploadImage, false);
 
 document.getElementById("filterSepia").addEventListener("click", filterSepia, false);
 
 document.getElementById("filterBina").addEventListener("click", filterBinarizacion, false);
+
+document.getElementById("filterGrey").addEventListener("click", filterGrey, false);
+
+document.getElementById("filterNegative").addEventListener("click", filterNegative, false);
+
+document.getElementById("clearCanvas").addEventListener("click", clearCanvas, false);
