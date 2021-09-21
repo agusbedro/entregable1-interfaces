@@ -86,7 +86,6 @@ function filterGrey() {
         var r = pixels[i];
         var g = pixels[i + 1];
         var b = pixels[i + 2];
- 
         var grey = ( r + g + b ) / 3;
  
         pixels[i] = grey;
@@ -115,6 +114,205 @@ function filterNegative () {
     ctx.putImageData( imgData, 0, 0 );
 }
 
+function filterBlur(){
+    var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+   
+    for(let x = 0; x<canvas.width; x++){
+        for(let y = 0; y<canvas.height; y++){
+            let pixelAvg = getPixelAverage(imgData, x, y);
+            let i = getIndex(imgData, x, y);
+            let data = imgData.data;
+            data[i] = pixelAvg.r;
+            data[i + 1] = pixelAvg.g;
+            data[i + 2] = pixelAvg.b;
+        }
+    }
+
+    ctx.putImageData(imgData, 0, 0 );
+}
+
+
+function getPixelAverage(imgData, x, y){
+    let r = [];
+    let g = [];
+    let b = [];
+
+    let pos0 = getIndex(imgData, x-1, y-1);
+    if(pos0!=null)
+        setRGB(imgData, pos0, r, g, b);
+
+    let pos1 = getIndex(imgData, x-1, y);
+    if(pos1!=null)
+        setRGB(imgData, pos1, r, g, b);
+
+    let pos2 = getIndex(imgData, x-1, y+1);
+    if(pos2!=null)
+        setRGB(imgData, pos2, r, g, b);
+
+    let pos3 = getIndex(imgData, x, y-1);
+    if(pos3!=null)
+        setRGB(imgData, pos3, r, g, b);
+
+    let pos4 = getIndex(imgData, x, y);
+    if(pos4!=null)
+        setRGB(imgData, pos4, r, g, b);
+
+    let pos5 = getIndex(imgData, x, y+1);
+    if(pos5!=null)
+        setRGB(imgData, pos5, r, g, b);
+
+    let pos6 = getIndex(imgData, x+1, y-1);
+    if(pos6!=null)
+        setRGB(imgData, pos6, r, g, b);
+
+    let pos7 = getIndex(imgData, x+1, y);
+    if(pos7!=null)
+        setRGB(imgData, pos7, r, g, b);
+
+    let pos8 = getIndex(imgData, x+1, y+1);
+    if(pos8!=null)
+        setRGB(imgData, pos8, r, g, b);
+
+
+    return getAverageRGB(r, g, b);
+}
+
+function getAverageRGB(r, g, b) {
+    let avgR = 0;
+    let avgG = 0;
+    let avgB = 0;
+    for (let i = 0; i < r.length; i++) {
+        avgR += r[i];
+        avgG += g[i];
+        avgB += b[i];
+    }
+    let rgb = {
+        'r': avgR / r.length,
+        'g': avgG / r.length,
+        'b': avgB / r.length
+    }
+    return rgb;
+}
+
+function getIndex(imgData, x, y){
+    let index = (x + y * imgData.width) * 4;
+        return index;
+}
+
+function setRGB(imgData, pos, r, g, b){
+    let rgb = getRGB(imgData, pos);
+        r.push(rgb.red);
+        g.push(rgb.green);
+        b.push(rgb.blue);
+}
+
+function getRGB(imgData, pos){
+    let data = imgData.data;
+    let rgb = {
+        "red": data[pos],
+        "green": data[pos+1],
+        "blue": data[pos+2]
+    }
+    return rgb;
+}
+
+function filterSaturation(){
+
+}
+
+function applySaturacion() {
+    let imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    for (let x = 0; x < canvas.width; x++) {
+        for (let y = 0; y < canvas.height; y++) {
+            //obtengo rgb
+            let pos = getIndex(imageData, x, y);
+            if(pos!=null){
+                let rgb = getRGB(imageData, pos);
+
+                let r = rgb.red;
+                let g = rgb.green;
+                let b = rgb.blue;
+                
+                //paso de rgb a hsl
+                let arrHsl = []
+                arrHsl = rgbToHsl(r, g, b);
+                let h = arrHsl[0];
+                let s = arrHsl[1];
+                let l = arrHsl[2];
+                s=1.1;
+              
+                //paso de hsl a rgb
+                let arr = hslToRgb(h, s, l);
+                r = arr[0];
+                g = arr[1];
+                b = arr[2];                
+               
+                setPixel(imageData, pos, r, g, b);
+            }          
+        }
+    }
+}
+
+//cuenta matematica sacada de internet
+function rgbToHsl(r, g, b) {
+    r /= 255, g /= 255, b /= 255;
+
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if (max == min) {
+        h = s = 0; // achromatic
+    } else {
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+
+        h /= 6;
+    }
+
+    return [h, s, l];
+}
+
+//cuenta matematica sacada de internet
+function hslToRgb(h, s, l) {
+    var r, g, b;
+
+    if (s == 0) {
+        r = g = b = l; // achromatic
+    } else {
+        function hue2rgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+        }
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+
+        r = hue2rgb(p, q, h + 1 / 3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1 / 3);
+    }
+
+    return [r * 255, g * 255, b * 255];
+}
+
+function setPixel(imageData, pos, r, g, b) {
+    imageData.data[pos] = r;
+    imageData.data[pos + 1] = g;
+    imageData.data[pos + 2] = b;
+    imageData.data[pos + 3] = 255;
+}
+
 function clearCanvas(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);   
 }
@@ -129,31 +327,6 @@ function downloadImage(){
     link.click();
     link.remove;
 
-}
-function filterBlur(){
-        let start = +new Date();
-		blur = 3;
-        
-		let sum = 0;
-		let delta = 5;
-		let alpha_left = 1 / (2 * Math.PI * delta * delta);
-		let step = blur < 3 ? 1 : 2;
-		for (let y = -blur; y <= blur; y += step) {
-			for (let x = -blur; x <= blur; x += step) {
-				let weight = alpha_left * Math.exp(-(x * x + y * y) / (2 * delta * delta));
-				sum += weight;
-			}
-		}
-		let count = 0;
-		for (let y = -blur; y <= blur; y += step) {
-			for (let x = -blur; x <= blur; x += step) {
-				count++;
-				ctx.globalAlpha = alpha_left * Math.exp(-(x * x + y * y) / (2 * delta * delta)) / sum * blur;
-				ctx.drawImage(canvas,x,y);
-			}
-		}
-		ctx.globalAlpha = 1;
-		console.log("time: "+(+new Date() - start))
 }
 
 
@@ -173,3 +346,6 @@ document.getElementById("clearCanvas").addEventListener("click", clearCanvas, fa
 document.getElementById("downloadImage").addEventListener("click", downloadImage, false);
 
 document.getElementById("filterBlur").addEventListener("click", filterBlur, false);
+
+document.getElementById("filterSaturation").addEventListener("click", applySaturacion, false);
+
