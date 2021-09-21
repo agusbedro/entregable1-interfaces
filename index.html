@@ -4,29 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Entregable 1</title>
 </head>
 <body>
     <div style="margin-top: 30px;">
         <div style="display: flex; justify-content: center;">
-            <div style="margin-bottom: 10px; ">
-                <button id="pencil"><img src="pencil.png" alt="" width="30" height="30" style="margin: 10px;"></button>
-                <button id="eraser"><img src="eraser.png" alt="" width="30" height="30" style="margin: 10px;"></button>  
-                <button id="clearCanvas">Restaurar</button>  
-                <button id="downloadImage">Descargar</button>              
+            <div style="display: grid;">
+                <button id="pencil" style="margin-bottom: 10px; height: 80px; width: 80px;"><img src="pencil.png" alt="" width="30" height="30"></button>
+                <button id="eraser" style="margin-bottom: 10px; height: 80px; width: 80px;"><img src="eraser.png" alt="" width="30" height="30"></button>
+                <button style="margin-bottom: 10px;height: 80px; width: 80px;"><input type="color"  id="paleta"></button>  
+                <button id="clearCanvas" style="margin-bottom: 10px; height: 80px; width: 80px;">Restaurar</button>  
+                <button id="downloadImage" style="margin-bottom: 10px; height: 80px; width: 80px;">Descargar</button>
+                <input type="file" name="image" id="image" style="margin-right: 10px;">
             </div>
-            <div>
-                <button style="margin-right: 30px; margin-left: 5px; padding: 15px 5px;"><input type="color"  id="paleta"></button>
-            </div>
-
-            <input type="file" name="image" id="image">
             
-            
-            <canvas id="myCanvas" width="700" height="500" style="border: solid grey 0.1cm;">
-
-            </canvas>
+            <canvas id="myCanvas" width="700" height="500" style="border: solid grey 0.1cm;"></canvas>
         </div>
-        <div style="text-align:center; margin-top: 20px;">
+
+        <div style="text-align:center; margin-top: 20px; margin-left: 250px;">
             <button id="filterSepia">Sepia</button>
             <button id="filterBina">Binarizacion</button>
             <button id="filterGrey">Grises</button>
@@ -38,7 +33,5 @@
     </div>
     <script src="js/main.js"></script>
     <script src="js/uploadImage.js"></script>
-
-
 </body>
 </html>
