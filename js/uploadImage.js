@@ -1,7 +1,7 @@
 let image;
 
 function addImage(){
-    var img = new Image();
+    let img = new Image();
     img.src = x;
     img.onload = function(){
         ctx.drawImage(img, 0, 0);
@@ -47,11 +47,11 @@ function uploadImage(e){
 }
 
 function filterSepia(){
-    var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-    var pixels = imgData.data;
+    let imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    let pixels = imgData.data;
     console.log(imgData.data);
     for(let i = 0; i< pixels.length;i+=4){
-        var luminosidad = .3 * pixels[i] + .6 * pixels[i + 1] + .1 * pixels[i + 2];
+        let luminosidad = .3 * pixels[i] + .6 * pixels[i + 1] + .1 * pixels[i + 2];
 		  pixels[i] = Math.min(luminosidad + 40, 255);
 		  pixels[i + 1] = Math.min(luminosidad + 15, 255);
 		  pixels[i + 2] = luminosidad;
@@ -60,8 +60,8 @@ function filterSepia(){
 }
 
 function filterBinarizacion(){
-    var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-    var pixels = imgData.data;
+    let imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    let pixels = imgData.data;
     for(let i = 0; i< pixels.length;i+=4){
         if(pixels[i] > 127){
             pixels[i] = 255;
@@ -80,13 +80,13 @@ function filterBinarizacion(){
 }
 
 function filterGrey() {
-    var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-    var pixels = imgData.data;
-    for ( var i = 0; i < pixels.length; i+=4 ) {
-        var r = pixels[i];
-        var g = pixels[i + 1];
-        var b = pixels[i + 2];
-        var grey = ( r + g + b ) / 3;
+    let imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    let pixels = imgData.data;
+    for ( let i = 0; i < pixels.length; i+=4 ) {
+        let r = pixels[i];
+        let g = pixels[i + 1];
+        let b = pixels[i + 2];
+        let grey = ( r + g + b ) / 3;
  
         pixels[i] = grey;
         pixels[i + 1] = grey;
@@ -98,13 +98,13 @@ function filterGrey() {
 
 function filterNegative () {
 
-    var imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-    var pixels = imgData.data;
+    let imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    let pixels = imgData.data;
 
-    for ( var i = 0; i < pixels.length; i++ ) {
-        var r = pixels[ i * 4 ];
-        var g = pixels[ i * 4 + 1 ];
-        var b = pixels[ i * 4 + 2 ];
+    for ( let i = 0; i < pixels.length; i++ ) {
+        let r = pixels[ i * 4 ];
+        let g = pixels[ i * 4 + 1 ];
+        let b = pixels[ i * 4 + 2 ];
  
         pixels[ i * 4 ] = 255 - r;
         pixels[ i * 4 + 1 ] = 255 - g;
@@ -216,9 +216,6 @@ function getRGB(imgData, pos){
     return rgb;
 }
 
-function filterSaturation(){
-
-}
 
 function applySaturacion() {
     let imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -258,13 +255,13 @@ function applySaturacion() {
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
 
-    var max = Math.max(r, g, b), min = Math.min(r, g, b);
-    var h, s, l = (max + min) / 2;
+    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
 
     if (max == min) {
         h = s = 0; // achromatic
     } else {
-        var d = max - min;
+        let d = max - min;
         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
         switch (max) {
@@ -281,7 +278,7 @@ function rgbToHsl(r, g, b) {
 
 //cuenta matematica sacada de internet
 function hslToRgb(h, s, l) {
-    var r, g, b;
+    let r, g, b;
 
     if (s == 0) {
         r = g = b = l; // achromatic
@@ -295,8 +292,8 @@ function hslToRgb(h, s, l) {
             return p;
         }
 
-        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        var p = 2 * l - q;
+        let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        let p = 2 * l - q;
 
         r = hue2rgb(p, q, h + 1 / 3);
         g = hue2rgb(p, q, h);
@@ -321,7 +318,7 @@ function downloadImage(){
     let canvas = document.getElementById("myCanvas");
     let image = canvas.toDataURL();
 
-    var link = document.createElement('a');
+    let link = document.createElement('a');
     link.download = "canvas.png";
     link.href = image;
     link.click();
@@ -348,4 +345,6 @@ document.getElementById("downloadImage").addEventListener("click", downloadImage
 document.getElementById("filterBlur").addEventListener("click", filterBlur, false);
 
 document.getElementById("filterSaturation").addEventListener("click", applySaturacion, false);
+
+
 
