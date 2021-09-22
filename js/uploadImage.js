@@ -351,7 +351,7 @@ function hslToRgb(h, s, l) {
 
 
 
-let img = document.getElementById("test");
+let img = document.getElementById("image");
 img.addEventListener('change', uploadImage, false);
 
 document.getElementById("filterSepia").addEventListener("click", filterSepia, false);
